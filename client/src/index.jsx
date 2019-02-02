@@ -9,8 +9,27 @@ class App extends React.Component {
     super(props);
     this.state = {
       repos: []
-    }
+    };
+    this.getRepos = this.getRepos.bind(this);
+  }
 
+  componentDidMount() {
+    this.getRepos();
+  }
+
+  getRepos() {
+
+    let that = this;
+
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:1128/repos',
+      success: (data) => {
+        that.setState({
+          repos: data
+        });
+      }
+    });
   }
 
   search (term) {
