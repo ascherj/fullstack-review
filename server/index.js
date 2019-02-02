@@ -1,29 +1,37 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Promise = require('bluebird');
 const getReposByUsername = require('../helpers/github.js').getReposByUsername;
 const db = require('../database/index.js');
 let app = express();
 
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 app.post('/repos', function (req, res) {
-  // TODO - your code here!
-  // This route should take the github username provided
-  // and get the repo information from the github API, then
-  // save the repo information in the database
+
   getReposByUsername(req.body.username, (repos) => {
     console.log(`got ${repos.length} repos from ${req.body.username} on GitHub`);
 
-    // TODO: save repos to mongodb
-    db.save(repos[0]);
+    var promises = repos.map((repo, index) => {
+      console.log('creating promise', index);
+      return Promise.resolve(db.save(repo));
+    });
+
+    Promise.all(promises)
+      .then(() => {
+        console.log('all repos were saved');
+        res.send('');
+      });
   });
 });
 
 app.get('/repos', function (req, res) {
-  // TODO - your code here!
-  // This route should send back the top 25 repos
+  db.getTop25((top25) => {
+    console.log('got the top 25', top25);
+    res.send(JSON.stringify(top25));
+  });
 });
 
 let port = 1128;

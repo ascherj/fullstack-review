@@ -18,9 +18,7 @@ db.once('open', function() {
   let Repo = mongoose.model('Repo', repoSchema);
 
   let save = (repo) => {
-    // TODO: Your code here
-    // This function should save a repo or repos to
-    // the MongoDB
+
     var newRepo = new Repo({
       id: repo.id,
       name: repo.name,
@@ -30,17 +28,21 @@ db.once('open', function() {
     });
 
     newRepo.save((err, newRepo) => {
-      if (err) return console.error(err);
+      if (err) return console.error(err.message);
       console.log('repo was saved');
     });
-  }
+  };
 
-  // let find = () => {
-  //   Repo.find((err, repos) => {
-  //     console.log('here are the saved repos:', repos);
-  //   });
-  // }
+  let getTop25 = (callback) => {
+    Repo.find()
+      .limit(25)
+      .sort({ stargazers_count: -1 })
+      .exec((err, results) => {
+        console.log('top 25 repos', results);
+        callback(results);
+      });
+  };
 
   module.exports.save = save;
-  // module.exports.find = find;
+  module.exports.getTop25 = getTop25;
 });
