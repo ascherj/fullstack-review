@@ -5,7 +5,10 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   let repoSchema = mongoose.Schema({
-    id: Number,
+    id: {
+      type: Number,
+      unique: true
+    },
     name: String,
     owner: String,
     stargazers_count: Number,
