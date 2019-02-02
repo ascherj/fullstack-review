@@ -18,14 +18,11 @@ class App extends React.Component {
   }
 
   getRepos() {
-
-    let that = this;
-
     $.ajax({
       type: 'GET',
       url: 'http://localhost:1128/repos',
       success: (data) => {
-        that.setState({
+        this.setState({
           repos: data
         });
       }
@@ -37,15 +34,16 @@ class App extends React.Component {
     $.ajax({
       type: 'POST',
       url: 'http://localhost:1128/repos',
-      data: { username: term }
+      data: { username: term },
+      success: () => { this.getRepos(); }
     });
   }
 
   render () {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
       <Search onSearch={this.search.bind(this)}/>
+      <RepoList repos={this.state.repos}/>
     </div>)
   }
 }
