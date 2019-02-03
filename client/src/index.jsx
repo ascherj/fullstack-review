@@ -11,6 +11,7 @@ class App extends React.Component {
       repos: []
     };
     this.getRepos = this.getRepos.bind(this);
+    this.port = process.env.PORT || 1128;
   }
 
   componentDidMount() {
@@ -20,7 +21,7 @@ class App extends React.Component {
   getRepos() {
     $.ajax({
       type: 'GET',
-      url: 'http://localhost:1128/repos',
+      url: `http://localhost:${this.port}/repos`,
       success: (data) => {
         this.setState({
           repos: data
@@ -33,7 +34,7 @@ class App extends React.Component {
     console.log(`${term} was searched`);
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:1128/repos',
+      url: `http://localhost:${this.port}/repos`,
       data: { username: term },
       success: () => { this.getRepos(); }
     });
