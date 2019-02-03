@@ -38,7 +38,6 @@ db.once('open', function() {
       .limit(25)
       .sort({ stargazers_count: -1 })
       .exec((err, results) => {
-        console.log('top 25 repos', results);
         callback(results);
       });
   };
